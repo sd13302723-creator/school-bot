@@ -20,6 +20,4 @@ def run_web_server():
 server_thread = threading.Thread(target=run_web_server, daemon=True)
 server_thread.start()
 
-# --- Здесь твой основной код бота ---
-# (Если у тебя здесь уже был код запуска бота, оставь его, 
-# а этот блок с веб-сервером просто добавь в самый верх или низу файла)
+# --- Здесь основной код бота ---
