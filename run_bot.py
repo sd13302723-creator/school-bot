@@ -2,29 +2,9 @@ import asyncio
 import logging
 import os
 from aiohttp import web
-from aiogram import Bot, Dispatcher, types
-from aiogram.filters import Command
-
-TOKEN = os.getenv("BOT_TOKEN", "YOUR_BOT_TOKEN")
-
-bot = Bot(token=TOKEN)
-dp = Dispatcher()
-
-@dp.message(Command("start"))
-async def cmd_start(message: types.Message):
-    builder = types.ReplyKeyboardMarkup(
-        keyboard=[
-            [types.KeyboardButton(text="⚙️ Изменить контакты родкомитета")],
-            [types.KeyboardButton(text="📅 Назначить собрание")],
-            [types.KeyboardButton(text="📢 Написать объявлению классу")],
-            [types.KeyboardButton(text="🔙 На главную")]
-        ],
-        resize_keyboard=True
-    )
-    await message.answer(
-        "👋 Панель классного руководителя.\n\nВыберите нужное управление:",
-        reply_markup=builder
-    )
+from aiogram import Bot, Dispatcher
+# Импортируем вашу основную логику из school_bot.py
+from school_bot import dp, bot
 
 async def handle(request):
     return web.Response(text="School SaaS Bot is running 24/7!")
