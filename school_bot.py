@@ -38,15 +38,15 @@ class ParentState(StatesGroup):
     waiting_for_absence_reason = State()
     waiting_for_parent_chat_message = State()
 
-# База данных класса на 38 учеников
+# База данных класса на 38 учеников с реальными именами
 class_data = {
     "1_v": {
-        "class_name": "Школьный класс",
+        "class_name": "1 «В»",
         "teacher_id": None,     # ID учителя
         "parents_ids": set(),   # ID всех родителей для рассылок
-        # История сообщений родительского чата (общая доска для родителей)
+        # История сообщений родительского чата
         "parent_chat_messages": [],
-        # Список родительского комитета (ФИО + телефон, чтобы каждый видел и мог позвонить)
+        # Список родительского комитета (ФИО + телефон)
         "parent_committee": [
             {"name": "Алина (Председатель)", "phone": "+996 555 123-456"},
             {"name": "Марат (Казначей)", "phone": "+996 700 987-654"}
@@ -56,15 +56,52 @@ class_data = {
             {"title": "🌷 Праздник 8 Марта", "date": "7 марта в 11:00"}
         ],
         "meeting_poll": {"yes": 0, "no": 0},
+        # Полный список 38 учеников
         "students": [
-            {"id": f"s{i}", "name": f"Ученик №{i}", "status": "В школе", "certificate": "Нет"} for i in range(1, 39)
+            {"id": "s1", "name": "Абдурасулов Алихан", "status": "В школе", "certificate": "Нет"},
+            {"id": "s2", "name": "Айткулова Айма", "status": "В школе", "certificate": "Нет"},
+            {"id": "s3", "name": "Амитова Аруузат", "status": "В школе", "certificate": "Нет"},
+            {"id": "s4", "name": "Бектуров Атай", "status": "В школе", "certificate": "Нет"},
+            {"id": "s5", "name": "Жаныбекова Айлин", "status": "В школе", "certificate": "Нет"},
+            {"id": "s6", "name": "Касымов Эрбол", "status": "В школе", "certificate": "Нет"},
+            {"id": "s7", "name": "Тургунбек уулу Самир", "status": "В школе", "certificate": "Нет"},
+            {"id": "s8", "name": "Мурзабекова Сафия", "status": "В школе", "certificate": "Нет"},
+            {"id": "s9", "name": "Осмонов Тимур", "status": "В школе", "certificate": "Нет"},
+            {"id": "s10", "name": "Шаршеева Эмина", "status": "В школе", "certificate": "Нет"},
+            {"id": "s11", "name": "Алиев Данияр", "status": "В школе", "certificate": "Нет"},
+            {"id": "s12", "name": "Бакиров Амир", "status": "В школе", "certificate": "Нет"},
+            {"id": "s13", "name": "Ибрагимова Аяна", "status": "В школе", "certificate": "Нет"},
+            {"id": "s14", "name": "Исмаилов Нурэпи", "status": "В школе", "certificate": "Нет"},
+            {"id": "s15", "name": "Нурланова Аделина", "status": "В школе", "certificate": "Нет"},
+            {"id": "s16", "name": "Акунов Арсен", "status": "В школе", "certificate": "Нет"},
+            {"id": "s17", "name": "Алыкулов Эмир", "status": "В школе", "certificate": "Нет"},
+            {"id": "s18", "name": "Асанбекова Амина", "status": "В школе", "certificate": "Нет"},
+            {"id": "s19", "name": "Бактыбеков Адилет", "status": "В школе", "certificate": "Нет"},
+            {"id": "s20", "name": "Болотбекова Айзере", "status": "В школе", "certificate": "Нет"},
+            {"id": "s21", "name": "Данияров Раян", "status": "В школе", "certificate": "Нет"},
+            {"id": "s22", "name": "Жолдошев Бакай", "status": "В школе", "certificate": "Нет"},
+            {"id": "s23", "name": "Исаков Имран", "status": "В школе", "certificate": "Нет"},
+            {"id": "s24", "name": "Калыбекова Раяна", "status": "В школе", "certificate": "Нет"},
+            {"id": "s25", "name": "Кубанычбекова Салима", "status": "В школе", "certificate": "Нет"},
+            {"id": "s26", "name": "Мамытов Умар", "status": "В школе", "certificate": "Нет"},
+            {"id": "s27", "name": "Медеров Аян", "status": "В школе", "certificate": "Нет"},
+            {"id": "s28", "name": "Назаров Артур", "status": "В школе", "certificate": "Нет"},
+            {"id": "s29", "name": "Омурзакова Аэлита", "status": "В школе", "certificate": "Нет"},
+            {"id": "s30", "name": "Рыскулов Дастан", "status": "В школе", "certificate": "Нет"},
+            {"id": "s31", "name": "Садырова Ясмина", "status": "В школе", "certificate": "Нет"},
+            {"id": "s32", "name": "Султанова Аделия", "status": "В школе", "certificate": "Нет"},
+            {"id": "s33", "name": "Таалайбеков Элдар", "status": "В школе", "certificate": "Нет"},
+            {"id": "s34", "name": "Темиров Али", "status": "В школе", "certificate": "Нет"},
+            {"id": "s35", "name": "Токтогулов Даниял", "status": "В школе", "certificate": "Нет"},
+            {"id": "s36", "name": "Уланов Эмирхан", "status": "В школе", "certificate": "Нет"},
+            {"id": "s37", "name": "Эркинбекова Арууке", "status": "В школе", "certificate": "Нет"},
+            {"id": "s38", "name": "Юсупова Альфия", "status": "В школе", "certificate": "Нет"}
         ]
     }
 }
 
 # --- 3. ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
 async def broadcast_to_parents(text: str, exclude_id=None):
-    """Рассылка сообщения всем зарегистрированным родителям (кроме автора)"""
     parents = class_data["1_v"]["parents_ids"]
     for p_id in parents:
         if p_id == exclude_id:
@@ -80,12 +117,12 @@ async def broadcast_to_parents(text: str, exclude_id=None):
 async def cmd_start(message: Message, state: FSMContext):
     await state.clear()
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="👩‍🏫 Учитель / Администрация", callback_data="role_teacher")],
-        [InlineKeyboardButton(text="👨‍👩‍👧 Родитель / Ученик", callback_data="role_parent")]
+        [InlineKeyboardButton(text="👩‍🏫 Классный руководитель", callback_data="role_teacher")],
+        [InlineKeyboardButton(text="👨‍👩‍👧 Родитель", callback_data="role_parent")]
     ])
     await message.answer(
-        "🏛 **Школьная система безопасности и связи**\n\n"
-        "⭐ *Единая платформа контроля посещаемости и общения*\n\n"
+        "🏛 **Система безопасности «Школа» (1 «В»)**\n\n"
+        "⭐ *Единая платформа контроля посещаемости и связи*\n\n"
         "Пожалуйста, выберите вашу роль для входа:",
         reply_markup=keyboard,
         parse_mode="Markdown"
@@ -107,7 +144,7 @@ async def process_teacher(callback: CallbackQuery):
     ])
     
     await callback.message.edit_text(
-        "👩‍🏫 **Кабинет классного руководителя**\n\n"
+        "👩‍🏫 **Кабинет классного руководителя (1 «В»)**\n\n"
         "Выберите нужный раздел управления:",
         reply_markup=keyboard,
         parse_mode="Markdown"
@@ -126,7 +163,7 @@ async def show_teacher_list(callback: CallbackQuery):
     home = sum(1 for s in class_data["1_v"]["students"] if "Забран" in s["status"])
     
     text = (
-        f"📋 **Журнал класса (всего 38 учеников):**\n"
+        f"📋 **Журнал класса 1 «В» (всего 38 учеников):**\n"
         f"🏫 В школе: **{in_school}** | 🟡 Опоздают: **{late}** | ✅ Дома: **{home}**\n\n"
     )
     for idx, student in enumerate(class_data["1_v"]["students"], start=1):
@@ -141,7 +178,7 @@ async def show_teacher_list(callback: CallbackQuery):
 @dp.callback_query(F.data == "teacher_certificates_menu")
 async def teacher_certificates_menu(callback: CallbackQuery):
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="✅ Отметить: Справка сдана (Ученик №1)", callback_data="cert_mark_given")],
+        [InlineKeyboardButton(text="✅ Отметить: Справка сдана", callback_data="cert_mark_given")],
         [InlineKeyboardButton(text="⬅ Назад в меню", callback_data="role_teacher")]
     ])
     text = "📄 **Раздел справок:**\n\nЗдесь отображаются ученики, у которых отмечено наличие справки (бумажную версию родитель передает лично в руки).\n\n"
@@ -160,7 +197,7 @@ async def teacher_certificates_menu(callback: CallbackQuery):
 
 @dp.callback_query(F.data == "cert_mark_given")
 async def cert_mark_given(callback: CallbackQuery):
-    class_data["1_v"]["students"][0]["certificate"] = "Сдана (вручено учителю)"
+    class_data["1_v"]["students"][6]["certificate"] = "Сдана (вручено учителю)"  # Пример для Самира (№7)
     await callback.answer("Статус справки обновлен! ✅", show_alert=True)
     await teacher_certificates_menu(callback)
 
@@ -240,8 +277,8 @@ async def process_parent(callback: CallbackQuery, state: FSMContext):
     class_data["1_v"]["parents_ids"].add(callback.from_user.id)
     
     keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="🟢 Ребёнок дома (Забран)", callback_data="status_pickup_s1")],
-        [InlineKeyboardButton(text="🟡 Сегодня опоздаем", callback_data="status_late_s1")],
+        [InlineKeyboardButton(text="🟢 Забрать: Тургунбек уулу Самир", callback_data="status_pickup_s7")],
+        [InlineKeyboardButton(text="🟡 Опоздаем на урок", callback_data="status_late_s7")],
         [InlineKeyboardButton(text="🔴 Пропустим / Причина...", callback_data="ask_custom_reason")],
         [InlineKeyboardButton(text="💬 Общий чат родителей", callback_data="parent_chat_main")],
         [InlineKeyboardButton(text="👥 Родительский комитет (телефоны)", callback_data="parent_view_committee")],
@@ -249,77 +286,11 @@ async def process_parent(callback: CallbackQuery, state: FSMContext):
         [InlineKeyboardButton(text="🚨 Экстренная связь с учителем", callback_data="emergency_contact")]
     ])
     await callback.message.edit_text(
-        "👨‍👩‍👧 **Кабинет родителя / ученика**\n\nВыберите нужное действие:",
+        "👨‍👩‍👧 **Кабинет родителя (1 «В»)**\n\nВыберите нужное действие:",
         reply_markup=keyboard,
         parse_mode="Markdown"
     )
     await callback.answer()
-
-# --- СВОБОДНЫЙ ЧАТ ДЛЯ РОДИТЕЛЕЙ ---
-
-@dp.callback_query(F.data == "parent_chat_main")
-async def parent_chat_main(callback: CallbackQuery, state: FSMContext):
-    await state.clear()
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="✍️ Написать в общий чат родителей", callback_data="write_to_parent_chat")],
-        [InlineKeyboardButton(text="🔄 Обновить ленту чата", callback_data="parent_chat_main")],
-        [InlineKeyboardButton(text="⬅ Назад в меню", callback_data="role_parent")]
-    ])
-    
-    chat_history = class_data["1_v"]["parent_chat_messages"]
-    text = "💬 **Свободный чат родителей класса**\n_(Здесь можно спросить про ручки, тетради, сборы и организационные вопросы)_\n\n"
-    
-    if not chat_history:
-        text += "_В чате пока нет сообщений. Напишите первое сообщение!_"
-    else:
-        # Показываем последние 10 сообщений
-        for msg_info in chat_history[-10:]:
-            text += f"• **{msg_info['sender']}**: {msg_info['text']} _({msg_info['time']})_\n"
-            
-    await callback.message.edit_text(text, reply_markup=keyboard, parse_mode="Markdown")
-    await callback.answer()
-
-@dp.callback_query(F.data == "write_to_parent_chat")
-async def write_to_parent_chat(callback: CallbackQuery, state: FSMContext):
-    await state.set_state(ParentState.waiting_for_parent_chat_message)
-    keyboard = InlineKeyboardMarkup(inline_keyboard=[
-        [InlineKeyboardButton(text="⬅ Отмена", callback_data="parent_chat_main")]
-    ])
-    await callback.message.edit_text(
-        "✍️ **Напишите ваше сообщение для всех родителей в чат:**\n\n"
-        "(Например: *«Здравствуйте! Случайно чья-то ручка попала к нам в сумку, вернем завтра»* или вопросы про сборы)",
-        reply_markup=keyboard,
-        parse_mode="Markdown"
-    )
-    await callback.answer()
-
-@dp.message(ParentState.waiting_for_parent_chat_message)
-async def process_parent_chat_message(message: Message, state: FSMContext):
-    user_text = message.text
-    user_name = message.from_user.full_name or "Родитель"
-    current_time = datetime.now().strftime("%H:%M")
-    
-    # Сохраняем сообщение в историю чата
-    class_data["1_v"]["parent_chat_messages"].append({
-        "sender": user_name,
-        "text": user_text,
-        "time": current_time
-    })
-    
-    # Рассылаем это сообщение остальным родителям в реальном времени
-    notification_text = f"💬 **Сообщение в чат родителей от {user_name}** ({current_time}):\n\n{user_text}"
-    await broadcast_to_parents(notification_text, exclude_id=message.from_user.id)
-    
-    await message.answer(
-        "✅ **Ваше сообщение успешно отправлено в общий чат родителей!**",
-        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
-            [InlineKeyboardButton(text="💬 Вернуться в чат", callback_data="parent_chat_main")]
-        ]),
-        parse_mode="Markdown"
-    )
-    await state.clear()
-
-# --- ОСТАЛЬНЫЕ МЕНЮ РОДИТЕЛЯ ---
 
 @dp.callback_query(F.data == "ask_custom_reason")
 async def ask_custom_reason(callback: CallbackQuery, state: FSMContext):
@@ -336,7 +307,7 @@ async def ask_custom_reason(callback: CallbackQuery, state: FSMContext):
 @dp.message(ParentState.waiting_for_absence_reason)
 async def process_custom_reason_text(message: Message, state: FSMContext):
     reason_text = message.text
-    target_student = class_data["1_v"]["students"][0]
+    target_student = class_data["1_v"]["students"][6]  # Самир (№7)
     target_student["status"] = f"Отсутствует ({reason_text})"
     target_student["certificate"] = "Требуется (пропуск)"
     
@@ -345,7 +316,7 @@ async def process_custom_reason_text(message: Message, state: FSMContext):
     teacher_id = class_data["1_v"]["teacher_id"]
     if teacher_id:
         try:
-            await bot.send_message(teacher_id, f"🔴 **Ученик №1** отсутствует.\n📝 Причина: *{reason_text}*", parse_mode="Markdown")
+            await bot.send_message(teacher_id, f"🔴 **{target_student['name']}** отсутствует.\n📝 Причина: *{reason_text}*", parse_mode="Markdown")
         except Exception as e:
             logging.error(f"Ошибка: {e}")
     await state.clear()
@@ -353,17 +324,17 @@ async def process_custom_reason_text(message: Message, state: FSMContext):
 @dp.callback_query(F.data.startswith("status_"))
 async def process_status_change(callback: CallbackQuery):
     data = callback.data
-    target_student = class_data["1_v"]["students"][0]
+    target_student = class_data["1_v"]["students"][6]  # Самир (№7)
     teacher_id = class_data["1_v"]["teacher_id"]
     
     if "pickup" in data:
         target_student["status"] = "Забран (Дома)"
-        resp = "✅ Ребёнок забран домой."
-        t_msg = "🔔 Ученик забран домой."
+        resp = "💚 **Всё отлично! Ребёнок дома и в безопасности. 🌸**"
+        t_msg = f"🔔 **1 «В»**: {target_student['name']} — забрали домой (отметка родителя)."
     elif "late" in data:
         target_student["status"] = "Опоздает"
         resp = "🟡 Учитель предупреждён об опоздании."
-        t_msg = "🟡 Ребёнок сегодня опоздает."
+        t_msg = f"🟡 **1 «В»**: {target_student['name']} сегодня опоздает."
 
     await callback.message.edit_text(resp, parse_mode="Markdown")
     if teacher_id:
@@ -372,6 +343,66 @@ async def process_status_change(callback: CallbackQuery):
         except Exception as e:
             logging.error(f"Ошибка: {e}")
     await callback.answer()
+
+# --- СВОБОДНЫЙ ЧАТ РОДИТЕЛЕЙ ---
+
+@dp.callback_query(F.data == "parent_chat_main")
+async def parent_chat_main(callback: CallbackQuery, state: FSMContext):
+    await state.clear()
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="✍️ Написать в общий чат родителей", callback_data="write_to_parent_chat")],
+        [InlineKeyboardButton(text="🔄 Обновить ленту чата", callback_data="parent_chat_main")],
+        [InlineKeyboardButton(text="⬅ Назад в меню", callback_data="role_parent")]
+    ])
+    
+    chat_history = class_data["1_v"]["parent_chat_messages"]
+    text = "💬 **Свободный чат родителей 1 «В» класса**\n_(Здесь можно обсудить организационные вопросы, сборы и обмениваться мнениями)_\n\n"
+    
+    if not chat_history:
+        text += "_В чате пока нет сообщений. Напишите первое сообщение!_"
+    else:
+        for msg_info in chat_history[-10:]:
+            text += f"• **{msg_info['sender']}**: {msg_info['text']} _({msg_info['time']})_\n"
+            
+    await callback.message.edit_text(text, reply_markup=keyboard, parse_mode="Markdown")
+    await callback.answer()
+
+@dp.callback_query(F.data == "write_to_parent_chat")
+async def write_to_parent_chat(callback: CallbackQuery, state: FSMContext):
+    await state.set_state(ParentState.waiting_for_parent_chat_message)
+    keyboard = InlineKeyboardMarkup(inline_keyboard=[
+        [InlineKeyboardButton(text="⬅ Отмена", callback_data="parent_chat_main")]
+    ])
+    await callback.message.edit_text(
+        "✍️ **Напишите ваше сообщение в общий чат родителей:**",
+        reply_markup=keyboard,
+        parse_mode="Markdown"
+    )
+    await callback.answer()
+
+@dp.message(ParentState.waiting_for_parent_chat_message)
+async def process_parent_chat_message(message: Message, state: FSMContext):
+    user_text = message.text
+    user_name = message.from_user.full_name or "Родитель"
+    current_time = datetime.now().strftime("%H:%M")
+    
+    class_data["1_v"]["parent_chat_messages"].append({
+        "sender": user_name,
+        "text": user_text,
+        "time": current_time
+    })
+    
+    notification_text = f"💬 **Сообщение в чат родителей от {user_name}** ({current_time}):\n\n{user_text}"
+    await broadcast_to_parents(notification_text, exclude_id=message.from_user.id)
+    
+    await message.answer(
+        "✅ **Ваше сообщение успешно отправлено в общий чат родителей!**",
+        reply_markup=InlineKeyboardMarkup(inline_keyboard=[
+            [InlineKeyboardButton(text="💬 Вернуться в чат", callback_data="parent_chat_main")]
+        ]),
+        parse_mode="Markdown"
+    )
+    await state.clear()
 
 @dp.callback_query(F.data.startswith("poll_vote_"))
 async def process_poll_vote(callback: CallbackQuery):
@@ -417,4 +448,4 @@ async def main():
     await dp.start_polling(bot)
 
 if __name__ == '__main__':
-    main()
+    asyncio.run(main())
