@@ -1,1 +1,1 @@
-worker: python school_bot.py
+web: python school_bot.py
