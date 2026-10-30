@@ -196,6 +196,12 @@ async def teacher_menu_handler(callback: types.CallbackQuery):
       inline_keyboard=[
           [
               InlineKeyboardButton(
+                  text="🟢 Уроки окончены (Уведомить родителей)",
+                  callback_data=f"t_lessons_ended:{class_id}",
+              )
+          ],
+          [
+              InlineKeyboardButton(
                   text="🚨 Вызвать родителя (Срочно!)",
                   callback_data=f"t_call_p:{class_id}",
               )
@@ -292,6 +298,36 @@ async def teacher_menu_handler(callback: types.CallbackQuery):
       parse_mode="Markdown",
   )
   await callback.answer()
+
+
+# --- Обработчик новой кнопки: Уроки окончены ---
+@dp.callback_query(F.filter(F.data.startswith("t_lessons_ended:")))
+async def process_lessons_ended(callback: types.CallbackQuery):
+  class_id = callback.data.split(":")[1]
+  data = load_data()
+  cls_name = data.get(class_id, {}).get("name", "Класс")
+
+  kb = InlineKeyboardMarkup(
+      inline_keyboard=[[
+          InlineKeyboardButton(
+              text="🔙 Назад в панель учителя",
+              callback_data=f"teacher_menu:{class_id}",
+          )
+      ]]
+  )
+
+  await callback.message.edit_text(
+      f"🟢 **Уведомление успешно разослано!**\n\n"
+      f"Для класса **«{cls_name}»** отправлен сигнал:\n"
+      f"«🟢 **Уроки окончены!** Уважаемые родители, занятия закончены."
+      f" Пожалуйста, встречайте и забирайте детей из школы.»",
+      reply_markup=kb,
+      parse_mode="Markdown",
+  )
+  await callback.answer(
+      "✅ Уведомление об окончании уроков отправлено родителям!",
+      show_alert=True,
+  )
 
 
 # --- 3. Кабинет родителя ---
@@ -638,585 +674,23 @@ async def process_t_treasurer_phone(message: types.Message, state: FSMContext):
   )
 
 
-@dp.callback_query(F.filter(F.data.startswith("t_meeting:")))
-async def t_meeting_start(callback: types.CallbackQuery, state: FSMContext):
-  class_id = callback.data.split(":")[1]
-  await state.update_data(current_class=class_id)
-  await callback.message.answer(
-      "📅 Введите дату и тему родительского собрания:"
-  )
-  await state.set_state(TeacherEdit.waiting_for_meeting)
-  await callback.answer()
+# --- Запуск веб-сервера для Render и Telegram бота ---
+async def handle_root(request):
+  return web.Response(text="Bot is running!")
 
 
-@dp.message(TeacherEdit.waiting_for_meeting)
-async def process_t_meeting(message: types.Message, state: FSMContext):
-  user_data = await state.get_data()
-  class_id = user_data.get("current_class")
-  data = load_data()
-  if class_id in data:
-    data[class_id]["next_meeting"] = message.text
-    save_data(data)
-  await state.clear()
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в панель учителя",
-              callback_data=f"teacher_menu:{class_id}",
-          )
-      ]]
-  )
-  await message.answer(
-      "✅ **Информация о собрании обновлена!**",
-      reply_markup=kb,
-      parse_mode="Markdown",
-  )
-
-
-@dp.callback_query(F.filter(F.data.startswith("t_announcement:")))
-async def t_announcement_start(
-    callback: types.CallbackQuery, state: FSMContext
-):
-  class_id = callback.data.split(":")[1]
-  await state.update_data(current_class=class_id)
-  await callback.message.answer("📢 Введите текст нового объявления:")
-  await state.set_state(TeacherEdit.waiting_for_announcement)
-  await callback.answer()
-
-
-@dp.message(TeacherEdit.waiting_for_announcement)
-async def process_t_announcement(message: types.Message, state: FSMContext):
-  user_data = await state.get_data()
-  class_id = user_data.get("current_class")
-  data = load_data()
-  if class_id in data:
-    data[class_id]["announcement"] = message.text
-    save_data(data)
-  await state.clear()
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в панель учителя",
-              callback_data=f"teacher_menu:{class_id}",
-          )
-      ]]
-  )
-  await message.answer(
-      "✅ **Объявление опубликовано!**", reply_markup=kb, parse_mode="Markdown"
-  )
-
-
-@dp.callback_query(F.filter(F.data.startswith("t_holidays:")))
-async def t_holidays_start(callback: types.CallbackQuery, state: FSMContext):
-  class_id = callback.data.split(":")[1]
-  await state.update_data(current_class=class_id)
-  await callback.message.answer("🎉 Введите список праздников и мероприятий:")
-  await state.set_state(TeacherEdit.waiting_for_holidays)
-  await callback.answer()
-
-
-@dp.message(TeacherEdit.waiting_for_holidays)
-async def process_t_holidays(message: types.Message, state: FSMContext):
-  user_data = await state.get_data()
-  class_id = user_data.get("current_class")
-  data = load_data()
-  if class_id in data:
-    data[class_id]["holidays"] = message.text
-    save_data(data)
-  await state.clear()
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в панель учителя",
-              callback_data=f"teacher_menu:{class_id}",
-          )
-      ]]
-  )
-  await message.answer(
-      "✅ **Список мероприятий обновлен!**",
-      reply_markup=kb,
-      parse_mode="Markdown",
-  )
-
-
-@dp.callback_query(F.filter(F.data.startswith("t_homework:")))
-async def t_homework_start(callback: types.CallbackQuery, state: FSMContext):
-  class_id = callback.data.split(":")[1]
-  await state.update_data(current_class=class_id)
-  await callback.message.answer("📚 Введите домашнее задание:")
-  await state.set_state(TeacherEdit.waiting_for_homework)
-  await callback.answer()
-
-
-@dp.message(TeacherEdit.waiting_for_homework)
-async def process_t_homework(message: types.Message, state: FSMContext):
-  user_data = await state.get_data()
-  class_id = user_data.get("current_class")
-  data = load_data()
-  if class_id in data:
-    data[class_id]["homework"] = message.text
-    save_data(data)
-  await state.clear()
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в панель учителя",
-              callback_data=f"teacher_menu:{class_id}",
-          )
-      ]]
-  )
-  await message.answer(
-      "✅ **Домашнее задание обновлено!**",
-      reply_markup=kb,
-      parse_mode="Markdown",
-  )
-
-
-@dp.callback_query(F.filter(F.data.startswith("t_schedule:")))
-async def t_schedule_start(callback: types.CallbackQuery, state: FSMContext):
-  class_id = callback.data.split(":")[1]
-  await state.update_data(current_class=class_id)
-  await callback.message.answer("⏰ Введите расписание уроков:")
-  await state.set_state(TeacherEdit.waiting_for_schedule)
-  await callback.answer()
-
-
-@dp.message(TeacherEdit.waiting_for_schedule)
-async def process_t_schedule(message: types.Message, state: FSMContext):
-  user_data = await state.get_data()
-  class_id = user_data.get("current_class")
-  data = load_data()
-  if class_id in data:
-    data[class_id]["schedule"] = message.text
-    save_data(data)
-  await state.clear()
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в панель учителя",
-              callback_data=f"teacher_menu:{class_id}",
-          )
-      ]]
-  )
-  await message.answer(
-      "✅ **Расписание обновлено!**", reply_markup=kb, parse_mode="Markdown"
-  )
-
-
-@dp.callback_query(F.filter(F.data.startswith("t_info_help:")))
-async def t_info_help_start(
-    callback: types.CallbackQuery, state: FSMContext
-):
-  class_id = callback.data.split(":")[1]
-  await state.update_data(current_class=class_id)
-  await callback.message.answer("ℹ️ Введите текст справки и правил школы:")
-  await state.set_state(TeacherEdit.waiting_for_info_help)
-  await callback.answer()
-
-
-@dp.message(TeacherEdit.waiting_for_info_help)
-async def process_t_info_help(message: types.Message, state: FSMContext):
-  user_data = await state.get_data()
-  class_id = user_data.get("current_class")
-  data = load_data()
-  if class_id in data:
-    data[class_id]["info_help"] = message.text
-    save_data(data)
-  await state.clear()
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в панель учителя",
-              callback_data=f"teacher_menu:{class_id}",
-          )
-      ]]
-  )
-  await message.answer(
-      "✅ **Справка и правила школы обновлены!**",
-      reply_markup=kb,
-      parse_mode="Markdown",
-  )
-
-
-@dp.callback_query(F.filter(F.data.startswith("t_view_notes:")))
-async def t_view_notes(callback: types.CallbackQuery):
-  class_id = callback.data.split(":")[1]
-  data = load_data()
-  notes = data.get(class_id, {}).get("medical_notes", [])
-  text = (
-      "📄 **ПОСТУПИВШИЕ СПРАВКИ И ЗАЯВЛЕНИЯ:**\n\n" + "\n\n".join(notes)
-      if notes
-      else "📄 Поступивших справок и заявлений нет."
-  )
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в панель учителя",
-              callback_data=f"teacher_menu:{class_id}",
-          )
-      ]]
-  )
-  await callback.message.edit_text(text, reply_markup=kb, parse_mode="Markdown")
-  await callback.answer()
-
-
-@dp.callback_query(F.filter(F.data.startswith("t_sub:")))
-async def t_sub_status(callback: types.CallbackQuery):
-  class_id = callback.data.split(":")[1]
-  data = load_data()
-  sub = data.get(class_id, {}).get("subscription", {})
-  text = (
-      f"💳 **Статус подписки класса:**\n\n"
-      f"• **Текущий тариф:** {sub.get('status', 'Пробный период')}\n"
-      f"• **Осталось дней:** {sub.get('days_left', 30)} дн.\n"
-      f"• **Стоимость продления:** {sub.get('price', '500 сом / мес')}\n\n"
-      f"🔔 *Автоматическое уведомление о продлении придёт за 3 дня до конца"
-      f" периода.*"
-  )
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в панель учителя",
-              callback_data=f"teacher_menu:{class_id}",
-          )
-      ]]
-  )
-  await callback.message.edit_text(text, reply_markup=kb, parse_mode="Markdown")
-  await callback.answer()
-
-
-# --- Обработчики разделов родителя ---
-@dp.callback_query(F.filter(F.data.startswith("p_notes:")))
-async def p_notes(callback: types.CallbackQuery):
-  class_id = callback.data.split(":")[1]
-  data = load_data()
-  text = data.get(class_id, {}).get(
-      "important_notes", "Медицинские отметки не зафиксированы."
-  )
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в кабинет родителя",
-              callback_data=f"parent_menu:{class_id}",
-          )
-      ]]
-  )
-  await callback.message.edit_text(
-      f"⚠️ **Важно о здоровье детей:**\n\n{text}",
-      reply_markup=kb,
-      parse_mode="Markdown",
-  )
-  await callback.answer()
-
-
-@dp.callback_query(F.filter(F.data.startswith("p_write_t:")))
-async def p_write_teacher(callback: types.CallbackQuery, state: FSMContext):
-  class_id = callback.data.split(":")[1]
-  await state.update_data(current_class=class_id)
-  await callback.message.answer(
-      "💬 Напишите ваш личный вопрос классному руководителю:"
-  )
-  await state.set_state(ParentSendNote.waiting_for_teacher_msg)
-  await callback.answer()
-
-
-@dp.message(ParentSendNote.waiting_for_teacher_msg)
-async def process_p_write_teacher(message: types.Message, state: FSMContext):
-  user_data = await state.get_data()
-  class_id = user_data.get("current_class")
-  await state.clear()
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в кабинет родителя",
-              callback_data=f"parent_menu:{class_id}",
-          )
-      ]]
-  )
-  await message.answer(
-      "✅ **Ваше сообщение конфиденциально передано учителю!**",
-      reply_markup=kb,
-      parse_mode="Markdown",
-  )
-
-
-@dp.callback_query(F.filter(F.data.startswith("p_poll:")))
-async def p_poll(callback: types.CallbackQuery):
-  class_id = callback.data.split(":")[1]
-  data = load_data()
-  poll_text = data.get(class_id, {}).get("active_poll", "Нет активных опросов.")
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[
-          [
-              InlineKeyboardButton(
-                  text="👍 Проголосовать «ДА»", callback_data="vote_yes"
-              )
-          ],
-          [
-              InlineKeyboardButton(
-                  text="👎 Проголосовать «НЕТ»", callback_data="vote_no"
-              )
-          ],
-          [
-              InlineKeyboardButton(
-                  text="🔙 Назад в кабинет родителя",
-                  callback_data=f"parent_menu:{class_id}",
-              )
-          ],
-      ]
-  )
-  await callback.message.edit_text(
-      poll_text, reply_markup=kb, parse_mode="Markdown"
-  )
-  await callback.answer()
-
-
-@dp.callback_query(F.data.in_(["vote_yes", "vote_no"]))
-async def process_vote(callback: types.CallbackQuery):
-  await callback.answer("✅ Ваш голос учтён!", show_alert=True)
-
-
-@dp.callback_query(F.filter(F.data.startswith("p_treasury:")))
-async def p_treasury(callback: types.CallbackQuery):
-  class_id = callback.data.split(":")[1]
-  data = load_data()
-  text = data.get(class_id, {}).get(
-      "treasury_report", "Отчёт казначея отсутствует."
-  )
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в кабинет родителя",
-              callback_data=f"parent_menu:{class_id}",
-          )
-      ]]
-  )
-  await callback.message.edit_text(
-      f"💰 **Фонд класса (Отчёт казначея):**\n\n{text}",
-      reply_markup=kb,
-      parse_mode="Markdown",
-  )
-  await callback.answer()
-
-
-@dp.callback_query(F.filter(F.data.startswith("p_send_note:")))
-async def p_send_note(callback: types.CallbackQuery, state: FSMContext):
-  class_id = callback.data.split(":")[1]
-  await state.update_data(current_class=class_id)
-  await callback.message.answer(
-      "📄 Напишите ФИО ребенка и причину отсутствия (или отправьте текст"
-      " заявления):"
-  )
-  await state.set_state(ParentSendNote.waiting_for_note)
-  await callback.answer()
-
-
-@dp.message(ParentSendNote.waiting_for_note)
-async def process_p_send_note(message: types.Message, state: FSMContext):
-  user_data = await state.get_data()
-  class_id = user_data.get("current_class")
-  data = load_data()
-  if class_id in data:
-    note_entry = f"• {message.from_user.full_name}: {message.text}"
-    data[class_id].setdefault("medical_notes", []).append(note_entry)
-    save_data(data)
-  await state.clear()
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в кабинет родителя",
-              callback_data=f"parent_menu:{class_id}",
-          )
-      ]]
-  )
-  await message.answer(
-      "✅ **Заявление/справка передана учителю!**",
-      reply_markup=kb,
-      parse_mode="Markdown",
-  )
-
-
-@dp.callback_query(F.filter(F.data.startswith("p_hw:")))
-async def p_hw(callback: types.CallbackQuery):
-  class_id = callback.data.split(":")[1]
-  data = load_data()
-  text = data.get(class_id, {}).get("homework", "Домашнее задание не добавлено.")
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в кабинет родителя",
-              callback_data=f"parent_menu:{class_id}",
-          )
-      ]]
-  )
-  await callback.message.edit_text(
-      f"📚 **Домашнее задание:**\n\n{text}",
-      reply_markup=kb,
-      parse_mode="Markdown",
-  )
-  await callback.answer()
-
-
-@dp.callback_query(F.filter(F.data.startswith("p_sch:")))
-async def p_sch(callback: types.CallbackQuery):
-  class_id = callback.data.split(":")[1]
-  data = load_data()
-  text = data.get(class_id, {}).get("schedule", "Расписание не добавлено.")
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в кабинет родителя",
-              callback_data=f"parent_menu:{class_id}",
-          )
-      ]]
-  )
-  await callback.message.edit_text(
-      f"⏰ **Расписание уроков:**\n\n{text}",
-      reply_markup=kb,
-      parse_mode="Markdown",
-  )
-  await callback.answer()
-
-
-@dp.callback_query(F.filter(F.data.startswith("p_rodkom:")))
-async def p_rodkom(callback: types.CallbackQuery):
-  class_id = callback.data.split(":")[1]
-  data = load_data()
-  cls_data = data.get(class_id, {})
-  text = (
-      f"👥 **Родительский комитет:**\n\n"
-      f"• Председатель: {cls_data.get('chairman_name', '-')}\n"
-      f"📞 Телефон: `{cls_data.get('chairman_phone', '-')}`\n\n"
-      f"• Казначей: {cls_data.get('treasurer_name', '-')}\n"
-      f"📞 Телефон: `{cls_data.get('treasurer_phone', '-')}`"
-  )
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в кабинет родителя",
-              callback_data=f"parent_menu:{class_id}",
-          )
-      ]]
-  )
-  await callback.message.edit_text(text, reply_markup=kb, parse_mode="Markdown")
-  await callback.answer()
-
-
-@dp.callback_query(F.filter(F.data.startswith("p_meeting:")))
-async def p_meeting(callback: types.CallbackQuery):
-  class_id = callback.data.split(":")[1]
-  data = load_data()
-  text = data.get(class_id, {}).get(
-      "next_meeting", "Собрания не запланированы."
-  )
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в кабинет родителя",
-              callback_data=f"parent_menu:{class_id}",
-          )
-      ]]
-  )
-  await callback.message.edit_text(
-      f"📅 **Родительские собрания:**\n\n{text}",
-      reply_markup=kb,
-      parse_mode="Markdown",
-  )
-  await callback.answer()
-
-
-@dp.callback_query(F.filter(F.data.startswith("p_announcement:")))
-async def p_announcement(callback: types.CallbackQuery):
-  class_id = callback.data.split(":")[1]
-  data = load_data()
-  text = data.get(class_id, {}).get("announcement", "Нет новых объявлений.")
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в кабинет родителя",
-              callback_data=f"parent_menu:{class_id}",
-          )
-      ]]
-  )
-  await callback.message.edit_text(
-      f"📢 **Объявления класса:**\n\n{text}",
-      reply_markup=kb,
-      parse_mode="Markdown",
-  )
-  await callback.answer()
-
-
-@dp.callback_query(F.filter(F.data.startswith("p_holidays:")))
-async def p_holidays(callback: types.CallbackQuery):
-  class_id = callback.data.split(":")[1]
-  data = load_data()
-  text = data.get(class_id, {}).get("holidays", "Праздников пока нет.")
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в кабинет родителя",
-              callback_data=f"parent_menu:{class_id}",
-          )
-      ]]
-  )
-  await callback.message.edit_text(
-      f"🎉 **Праздники и мероприятия:**\n\n{text}",
-      reply_markup=kb,
-      parse_mode="Markdown",
-  )
-  await callback.answer()
-
-
-@dp.callback_query(F.filter(F.data.startswith("p_info_help:")))
-async def p_info_help(callback: types.CallbackQuery):
-  class_id = callback.data.split(":")[1]
-  data = load_data()
-  text = data.get(class_id, {}).get("info_help", "Правила не заполнены.")
-  kb = InlineKeyboardMarkup(
-      inline_keyboard=[[
-          InlineKeyboardButton(
-              text="🔙 Назад в кабинет родителя",
-              callback_data=f"parent_menu:{class_id}",
-          )
-      ]]
-  )
-  await callback.message.edit_text(
-      f"ℹ️ **Справка и правила школы:**\n\n{text}",
-      reply_markup=kb,
-      parse_mode="Markdown",
-  )
-  await callback.answer()
-
-
-# Кнопки быстрых отметок посещаемости
-@dp.callback_query(F.filter(F.data.startswith("act_")))
-async def process_attendance_actions(callback: types.CallbackQuery):
-  action = callback.data.split(":")[0]
-  responses = {
-      "act_pickup": "🟢 Учитель уведомлен, что вы забираете ребенка.",
-      "act_late": "🟡 Учитель уведомлен об опоздании.",
-      "act_skip": "🔴 Отметка сохранена: ребенок сегодня не пришел.",
-  }
-  await callback.answer(responses.get(action, "Готово!"), show_alert=True)
-
-
-# --- Веб-сервер 24/7 ---
-async def handle(request):
-  return web.Response(text="Multiclass School Bot is Running 24/7!")
-
-
-async def web_server():
+async def run_web_server():
   app = web.Application()
-  app.router.add_get("/", handle)
+  app.router.add_get("/", handle_root)
   runner = web.AppRunner(app)
   await runner.setup()
-  port = int(os.environ.get("PORT", 10000))
-  site = web.TCPSite(runner, "0.0.0.0", port)
+  port = int(os.environ.get("PORT", 8080))
+  site = web.TCPSite(runner, "0.0.00", port)
   await site.start()
 
 
 async def main():
-  asyncio.create_task(web_server())
+  asyncio.create_task(run_web_server())
   await dp.start_polling(bot)
 
 
