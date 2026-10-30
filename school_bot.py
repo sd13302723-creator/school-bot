@@ -164,3 +164,16 @@ class MonthlyPdfExportLog(Base):
     report_type = Column(String(50), nullable=False)              # attendance, replacements, progress, girono_summary
     pdf_file_url = Column(String(500), nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
+import time
+import http.server
+import socketserver
+import os
+
+# Простейший HTTP-сервер для удержания порта на Render
+PORT = int(os.environ.get("PORT", 10000))
+Handler = http.server.SimpleHTTPRequestHandler
+
+with socketserver.TCPServer(("", PORT), Handler) as httpd:
+    print(hotkey := f"Serving at port {PORT}")
+    httpd.serve_forever()
+    
